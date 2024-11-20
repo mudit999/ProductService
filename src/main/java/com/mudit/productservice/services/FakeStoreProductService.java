@@ -2,6 +2,7 @@ package com.mudit.productservice.services;
 
 import com.mudit.productservice.dtos.CreateProductRequestDto;
 import com.mudit.productservice.dtos.FakeStoreProductDto;
+import com.mudit.productservice.exceptions.ProductNotFoundException;
 import com.mudit.productservice.models.Product;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,7 +12,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.ArrayList;
 import java.util.List;
 
-@Service
+@Service("fakeStoreProductService")
 public class FakeStoreProductService implements ProductService{
 
     private RestTemplate restTemplate; // using this, we can call 3rd party API/ External API
@@ -43,7 +44,7 @@ public class FakeStoreProductService implements ProductService{
 //    }
 
     @Override
-    public Product getSingleProduct(long id) {
+    public Product getSingleProduct(long id) throws ProductNotFoundException {
         /*
         call the external fakestore product api
         https://fakestoreapi.com/products/1
@@ -61,7 +62,7 @@ public class FakeStoreProductService implements ProductService{
 
         FakeStoreProductDto fakeStoreProductDto = fakeStoreProductDtoResponseEntity.getBody();
         if(fakeStoreProductDto == null){
-            return null;
+            throw new ProductNotFoundException("Product with id " + id + " is not present in service. It is invalid Id");
         }
         return fakeStoreProductDto.toProduct();
     }

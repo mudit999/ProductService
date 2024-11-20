@@ -1,10 +1,14 @@
 package com.mudit.productservice.controllers;
 
 import com.mudit.productservice.dtos.CreateProductRequestDto;
+import com.mudit.productservice.dtos.ErrorDTO;
+import com.mudit.productservice.exceptions.ProductNotFoundException;
 import com.mudit.productservice.models.Product;
 import com.mudit.productservice.services.FakeStoreProductService;
 import com.mudit.productservice.services.ProductService;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,7 +24,8 @@ public class ProductController {
     // Here class should not initialize the service, it should be injected (IOC)
     // public ProductService productService = new FakeStoreProductService();
 
-    public ProductController(ProductService productService) {
+    // Qualifier - specify the service
+    public ProductController(@Qualifier("selfProductService") ProductService productService) {
         this.productService = productService;
     }
 
@@ -42,7 +47,7 @@ public class ProductController {
      */
 
     @GetMapping("/products/{id}")
-    public ResponseEntity<Product> getSingleProduct(@PathVariable("id") long id){
+    public ResponseEntity<Product> getSingleProduct(@PathVariable("id") long id) throws ProductNotFoundException{
         Product p =  productService.getSingleProduct(id);
         ResponseEntity<Product> responseEntity;
 
@@ -76,4 +81,15 @@ public class ProductController {
                                             createProductRequestDto.getCategory(),
                                             createProductRequestDto.getPrice());
     }
+
+    //  Manual Exception Handler
+    //  Controller is catching the exception here
+//    @ExceptionHandler(ProductNotFoundException.class)
+//    public ResponseEntity<ErrorDTO> handleProductNotFoundException(ProductNotFoundException productNotFoundException){
+//        ErrorDTO errorDTO = new ErrorDTO();
+//        errorDTO.setMessage(productNotFoundException.getMessage());
+//
+//        ResponseEntity<ErrorDTO> responseEntity = new ResponseEntity<>(errorDTO, HttpStatus.NOT_FOUND);
+//        return responseEntity;
+//    }
 }
