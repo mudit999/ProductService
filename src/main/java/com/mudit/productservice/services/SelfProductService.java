@@ -8,6 +8,7 @@ import com.mudit.productservice.repositories.ProductRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service("selfProductService")
 public class SelfProductService implements ProductService{
@@ -24,12 +25,18 @@ public class SelfProductService implements ProductService{
 
     @Override
     public List<Product> getAllProducts() {
-        return List.of();
+        return productRepository.findAll();
     }
 
     @Override
     public Product getSingleProduct(long id) throws ProductNotFoundException {
-        return null;
+        Optional<Product> product = productRepository.findById(id);
+
+        if(product.isEmpty()){
+            throw new ProductNotFoundException("Product with id " + id + " not found in database");
+        }
+
+        return product.get();
     }
 
     @Override

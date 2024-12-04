@@ -1,5 +1,6 @@
 package com.mudit.productservice.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
@@ -19,7 +20,8 @@ public class Category extends BaseModel {
     private String title;
 
     // cascade - if category is removed, then associated data is also removed
-  @OneToMany(mappedBy = "category", cascade = {CascadeType.REMOVE})
+    @OneToMany(mappedBy = "category", cascade = {CascadeType.REMOVE})
+    @JsonIgnore
     List<Product> productList;
 }
 
