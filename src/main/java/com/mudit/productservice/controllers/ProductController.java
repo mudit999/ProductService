@@ -25,7 +25,7 @@ public class ProductController {
     // public ProductService productService = new FakeStoreProductService();
 
     // Qualifier - specify the service
-    public ProductController(@Qualifier("selfProductService") ProductService productService) {
+    public ProductController(@Qualifier("fakeStoreProductService") ProductService productService) {
         this.productService = productService;
     }
 
@@ -50,7 +50,6 @@ public class ProductController {
     public ResponseEntity<Product> getSingleProduct(@PathVariable("id") long id) throws ProductNotFoundException{
         Product p =  productService.getSingleProduct(id);
         ResponseEntity<Product> responseEntity;
-
         if(p == null){
             responseEntity = new ResponseEntity<>(p, HttpStatus.NOT_FOUND);
         }else{
