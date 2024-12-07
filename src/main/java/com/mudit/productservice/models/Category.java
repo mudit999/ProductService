@@ -3,6 +3,7 @@ package com.mudit.productservice.models;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,7 +21,8 @@ public class Category extends BaseModel {
     private String title;
 
     // cascade - if category is removed, then associated data is also removed
-    @OneToMany(mappedBy = "category", cascade = {CascadeType.REMOVE})
+    // Collections has by default Fetch Type - Lazy, you can change it to eager as well
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "category", cascade = {CascadeType.REMOVE})
     @JsonIgnore
     List<Product> productList;
 }
