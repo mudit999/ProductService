@@ -5,6 +5,8 @@ import com.mudit.productservice.models.Category;
 import com.mudit.productservice.models.Product;
 import com.mudit.productservice.repositories.CategoryRepository;
 import com.mudit.productservice.repositories.ProductRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -37,6 +39,10 @@ public class SelfProductService implements ProductService{
         }
 
         return product.get();
+    }
+
+    public Page<Product> getAllProductsPaginated(int pageNo, int pageSize){
+            return productRepository.findAll(PageRequest.of(pageNo, pageSize));
     }
 
     @Override

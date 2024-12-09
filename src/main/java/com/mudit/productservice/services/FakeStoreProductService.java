@@ -1,9 +1,9 @@
 package com.mudit.productservice.services;
-
 import com.mudit.productservice.dtos.CreateProductRequestDto;
 import com.mudit.productservice.dtos.FakeStoreProductDto;
 import com.mudit.productservice.exceptions.ProductNotFoundException;
 import com.mudit.productservice.models.Product;
+import org.springframework.data.domain.Page;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,11 +37,6 @@ public class FakeStoreProductService implements ProductService{
 
 //    @Override
 //    public Product getSingleProduct(long id) {
-//        /*
-//        call the external fakestore product api
-//        https://fakestoreapi.com/products/1
-//         */
-//
 //        FakeStoreProductDto fakeStoreProductDto = restTemplate.getForObject("https://fakestoreapi.com/products/" + id, FakeStoreProductDto.class);
 //        return fakeStoreProductDto.toProduct();
 //    }
@@ -62,16 +57,9 @@ public class FakeStoreProductService implements ProductService{
         }
 
         // Cache miss
-
         ResponseEntity<FakeStoreProductDto> fakeStoreProductDtoResponseEntity = restTemplate.getForEntity(
                 "https://fakestoreapi.com/products/" + id,
                 FakeStoreProductDto.class);
-
-//        if(fakeStoreProductDtoResponseEntity.getStatusCode() != HttpStatus.valueOf(200)){
-//            // throw an exception
-//        }
-//
-//        fakeStoreProductDtoResponseEntity.getHeaders()
 
         FakeStoreProductDto fakeStoreProductDto = fakeStoreProductDtoResponseEntity.getBody();
         if(fakeStoreProductDto == null){
@@ -81,6 +69,11 @@ public class FakeStoreProductService implements ProductService{
         product = fakeStoreProductDto.toProduct();
         redisTemplate.opsForHash().put("PRODUCTS", "product_" + id, product);
         return product;
+    }
+
+    @Override
+    public Page<Product> getAllProductsPaginated(int pageNo, int pageSize) {
+        return null;
     }
 
     @Override

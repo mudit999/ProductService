@@ -7,6 +7,7 @@ import com.mudit.productservice.models.Product;
 import com.mudit.productservice.services.FakeStoreProductService;
 import com.mudit.productservice.services.ProductService;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -25,13 +26,9 @@ public class ProductController {
     // public ProductService productService = new FakeStoreProductService();
 
     // Qualifier - specify the service
-    public ProductController(@Qualifier("fakeStoreProductService") ProductService productService) {
+    public ProductController(@Qualifier("selfProductService") ProductService productService) {
         this.productService = productService;
     }
-
-    /*
-    Api = method in my controller
-     */
 
     /*
     GET /products
@@ -59,6 +56,19 @@ public class ProductController {
     }
 
     /*
+    GET products/paginated?pageNo=a&pageSize=b
+    a - pageNo
+    b - pageSize (max no. of items on single page)
+     */
+
+    @GetMapping("/products/paginated")
+    public List<Product> getProductsPaginated(@RequestParam("pageNo") int pageNo, @RequestParam("pageSize") int pageSize){
+        Page<Product> productPage = productService.getAllProductsPaginated(pageNo, pageSize);
+        List<Product> products = productPage.getContent();
+        return products;
+    }
+
+    /*
     Create a Product
 
     {
@@ -81,14 +91,15 @@ public class ProductController {
                                             createProductRequestDto.getPrice());
     }
 
-    //  Manual Exception Handler
-    //  Controller is catching the exception here
-//    @ExceptionHandler(ProductNotFoundException.class)
-//    public ResponseEntity<ErrorDTO> handleProductNotFoundException(ProductNotFoundException productNotFoundException){
-//        ErrorDTO errorDTO = new ErrorDTO();
-//        errorDTO.setMessage(productNotFoundException.getMessage());
-//
-//        ResponseEntity<ErrorDTO> responseEntity = new ResponseEntity<>(errorDTO, HttpStatus.NOT_FOUND);
-//        return responseEntity;
-//    }
+    // Manual Exception Handler
+    // Controller is catching the exception here
+
+    //    @ExceptionHandler(ProductNotFoundException.class)
+    //    public ResponseEntity<ErrorDTO> handleProductNotFoundException(ProductNotFoundException productNotFoundException){
+    //        ErrorDTO errorDTO = new ErrorDTO();
+    //        errorDTO.setMessage(productNotFoundException.getMessage());
+    //
+    //        ResponseEntity<ErrorDTO> responseEntity = new ResponseEntity<>(errorDTO, HttpStatus.NOT_FOUND);
+    //        return responseEntity;
+    //    }
 }
